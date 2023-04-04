@@ -29,6 +29,7 @@ namespace StarterAssets
         public float SpeedChangeRate = 10.0f;
 
         public AudioClip LandingAudioClip;
+        private AudioSource AudioSource;
         public AudioClip[] FootstepAudioClips;
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
 
@@ -75,6 +76,8 @@ namespace StarterAssets
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
         public Vector2 lookSensitivity;
+        [Header("respawnPoint")]
+        public Transform respawnPoint;
 
         // cinemachine
         private float _cinemachineTargetYaw;
@@ -135,6 +138,7 @@ namespace StarterAssets
 
         private void Start()
         {
+            AudioSource = GetComponent<AudioSource>();
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
@@ -155,12 +159,18 @@ namespace StarterAssets
 
         private void Update()
         {
+
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
             GroundedCheck();
             Move();
+            if (transform.position.y < -1) {
+            transform.position = respawnPoint.position;
+            AudioSource.Play();
         }
+        }
+        
 
         private void LateUpdate()
         {
